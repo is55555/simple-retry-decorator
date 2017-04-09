@@ -26,8 +26,19 @@ def fails75percent():
     else:
         return True
 
+@retry(10, initial_delay=1, exponential_backoff=1.2, loud=True)
+def fails75percent_truthy():
+    r = random.random()
+    if r < 0.75:
+        return 0
+    else:
+        return r * 100.0
+
 print("calling fails75percent with retry(10, initial_delay=0.5, exponential_backoff=1.5, loud=True)")
 print(fails75percent())
+
+print("calling fails75percent_truthy with retry(10, initial_delay=1, exponential_backoff=1.2, loud=True)")
+print(fails75percent_truthy())
 
 print("calling fails3 with retry(5)")
 print(fails3())
