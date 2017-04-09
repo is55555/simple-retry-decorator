@@ -42,7 +42,7 @@ I added this decorator to deal with the problem of returned values and encapsula
 different way.
 
 In Python, failure is generally expressed by the raising of an exception rather than through returned values. The
-decorator @retry_catch 
+decorator @retry_catch provides a mechanism to capture this.
 
 
     @retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)
@@ -53,6 +53,11 @@ decorator @retry_catch
         else:
             return 0  # return a falsy value on success to test this is fine
 
+The default exception caught by the retry_catch decorator is BaseException. In the example I set it to ValueError which
+is the concrete exception raised on the failures we want to retry upon. You may want to define an exception class if 
+you want the retrials to act only on certain situations or combinations of exceptions (I pondered whether it would make
+sense to allow for a tuple with a number of exception classes but I believe it's better to deal with this from the 
+outside, simply defining a new exception class).
 
 # TODO
 
