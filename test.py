@@ -1,4 +1,4 @@
-from retry import retry
+from retry import retry, retry_catch
 import random
 
 
@@ -26,6 +26,7 @@ def fails75percent():
     else:
         return True
 
+
 @retry(10, initial_delay=1, exponential_backoff=1.2, loud=True)
 def fails75percent_truthy():
     r = random.random()
@@ -33,6 +34,16 @@ def fails75percent_truthy():
         return 0
     else:
         return r * 100.0
+
+
+@retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)
+def fails75percent_nottruthy_raisy():
+    r = random.random()
+    if r < 0.75:
+        raise ValueError("oops")
+    else:
+        return 0  # return a falsy value on success to test this is fine
+
 
 print("calling fails75percent with retry(10, initial_delay=0.5, exponential_backoff=1.5, loud=True)")
 print(fails75percent())
@@ -42,6 +53,11 @@ print(fails75percent_truthy())
 
 print("calling fails3 with retry(5)")
 print(fails3())
+
+print("calling fails75percent_nottruthy_raisy with " +
+      "@retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)")
+print(fails75percent_nottruthy_raisy())
+
 
 print("end")
 

@@ -36,12 +36,31 @@ Not all functions/methods will return truthy/falsy values signifying success, so
 utility supervisor function that does return a truthy/falsy value depending on success, maybe set some variable to keep
 track of the output of the actual function if that is necessary, and then decorate that. See TODO.
 
+# retry_catch
+
+I added this decorator to deal with the problem of returned values and encapsulation of the errors/failures in a
+different way.
+
+In Python, failure is generally expressed by the raising of an exception rather than through returned values. The
+decorator @retry_catch 
+
+
+    @retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)
+    def fails75percent_nottruthy_raisy():
+        r = random.random()
+        if r < 0.75:
+            raise ValueError("oops")
+        else:
+            return 0  # return a falsy value on success to test this is fine
+
+
 # TODO
 
 1. More realistic examples with supervisor functions
 
-2. Generic supervisor to convert any function to a function returning True/False
-based on whether an exception was thrown or not.
+2. ~~Generic supervisor to convert any function to a function returning True/False
+based on whether an exception was thrown or not.~~ I believe @retry_catch is a better approach for the general case,
+letting the user define helper functions to deal with special cases.
 
 3. Maybe it would be interesting to allow for customising the retry message rather than passing a boolean to "loud"
 
