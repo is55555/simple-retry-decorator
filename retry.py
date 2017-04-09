@@ -28,17 +28,18 @@ def retry(tries, initial_delay=1, exponential_backoff=1, loud=False):
         def closure(*args, **kwargs):
             mutable_tries = tries
             mutable_delay = initial_delay
-            rv = f(*args, **kwargs)  # initiall call
+            return_value = f(*args, **kwargs)  # initial call
             while mutable_tries > 0:
-                if rv is True:
-                    return True
+                if return_value:
+                    return return_value
                 mutable_tries -= 1
                 if loud:
                     print("retrying")
                 time.sleep(mutable_delay)
                 mutable_delay *= exponential_backoff
-                rv = f(*args, **kwargs)  # retry call
-            return False
-        return closure  # true decorator -> decorated function
+                return_value = f(*args, **kwargs)  # retry call
+            return return_value
+        return closure  # decorator -> decorated function
 
-    return decorator  # @retry(arg[, ...]) -> true decorator
+    return decorator  # @retry(args) -> decorator
+
