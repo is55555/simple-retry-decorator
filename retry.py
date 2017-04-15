@@ -1,10 +1,17 @@
+# -*- coding: utf-8 -*-
+
+# IS 2017 (MIT licence)
+#  https://github.com/is55555/simple-retry-decorator
+
 import time
 
 import sys
 if sys.version_info < (3,):  # pragma: no cover
     integer_types = (int, long,)
+    PY3 = False
 else:  # pragma: no cover
     integer_types = (int,)
+    PY3 = True
 
 
 # decorator
@@ -70,6 +77,12 @@ def retry_catch(tries, exception = BaseException, initial_delay=1, exponential_b
                 return_value = f(*args, **kwargs)  # initial call
             except exception:
                 succeeded = False
+
+                import sys
+                exc_info = sys.exc_info()
+                if PY3:
+                    E, V, T = exc_info[0], exc_info[1], exc_info[2]
+
             while not succeeded and mutable_tries > 0:
                 if succeeded:
                     return return_value
@@ -87,7 +100,20 @@ def retry_catch(tries, exception = BaseException, initial_delay=1, exponential_b
             if succeeded:
                 return return_value
             else:
-                raise exception
+                # raise exception
+
+                if PY3:
+                    e = E(V)
+                    e.__traceback__ = T
+                    raise e  # (py3) re-raise the concrete last exception
+                else:
+                    # raise exc_info[0], exc_info[1], exc_info[2]  # (py2) re-raise the concrete last exception
+
+                    # this is worse in Py2 than the commented statement above, but done for compatibility reasons
+                    import traceback
+                    traceback.print_exc()
+
+                    raise exception
 
         return closure  # decorator -> decorated function
 
