@@ -59,6 +59,9 @@ you want the retrials to act only on certain situations or combinations of excep
 sense to allow for a tuple with a number of exception classes but I believe it's better to deal with this from the 
 outside, simply defining a new exception class).
 
+This decorator will reraise the appropriate exception in Python 3 (In Python 2 it will reraise a generic Exception 
+showing the detail in stdout - I did this for simplicity reasons but I might correct it in the future).
+
 # TODO
 
 1. More realistic examples with supervisor functions
