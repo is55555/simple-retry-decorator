@@ -4,7 +4,7 @@ import random
 
 
 def fails_the_first_3_times():  # this may be a bit convoluted, fails75percent is a lot simpler
-    n=3
+    n = 3
     while n > 0:
         print("no")
         yield False
@@ -55,7 +55,6 @@ def fails75percent_nottruthy_raisy_twice():
         return 0  # return a falsy value on success to test this is fine
 
 
-
 print("calling fails75percent with retry(10, initial_delay=0.5, exponential_backoff=1.5, loud=True)")
 print(fails75percent())
 
@@ -65,14 +64,20 @@ print(fails75percent_truthy())
 print("calling fails3 with retry(5)")
 print(fails3())
 
-print("calling fails75percent_nottruthy_raisy with " +
-      "@retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)")
-print(fails75percent_nottruthy_raisy())
+try:
+    print("calling fails75percent_nottruthy_raisy with " +
+          "@retry_catch(10, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)")
+    print(fails75percent_nottruthy_raisy())
+except ValueError:
+    print("Failed with the expected exception")
 
-print("calling fails75percent_nottruthy_raisy_twice with " +
-      "@retry_catch(2, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)")
-print(fails75percent_nottruthy_raisy_twice())   # note that this is expected to fail often, and do it with the original
-                                                # exception
+try:
+    print("calling fails75percent_nottruthy_raisy_twice with " +
+          "@retry_catch(2, exception=ValueError, initial_delay=1, exponential_backoff=1.2, loud=True)")
+    print(fails75percent_nottruthy_raisy_twice())   # note that this is expected to fail often, and do it with the
+    # original exception
+except ValueError:
+    print("Failed with the expected exception")
 
 print("end")
 

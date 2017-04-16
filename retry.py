@@ -41,7 +41,7 @@ def retry(tries, initial_delay=1, exponential_backoff=1, loud=False):
                     return return_value
                 mutable_tries -= 1
                 if loud:
-                    print("retrying")
+                    print("retrying in %f seconds" % mutable_delay)
                 time.sleep(mutable_delay)
                 mutable_delay *= exponential_backoff
                 return_value = f(*args, **kwargs)  # retry call
@@ -88,7 +88,7 @@ def retry_catch(tries, exception = BaseException, initial_delay=1, exponential_b
                     return return_value
                 mutable_tries -= 1
                 if loud:
-                    print("retrying")
+                    print("retrying in %f seconds" % mutable_delay)
                 time.sleep(mutable_delay)
                 mutable_delay *= exponential_backoff
                 try:
